@@ -379,6 +379,18 @@ export default class Module {
 		};
 	}
 
+	toApi () {
+		return {
+			id: this.id,
+			dependencies: this.dependencies.map( module => module.id ),
+			code: this.code,
+			originalCode: this.originalCode,
+			ast: this.ast,
+			sourceMapChain: this.sourceMapChain,
+			resolvedIds: this.resolvedIds
+		};
+	}
+
 	trace ( name ) {
 		// TODO this is slightly circular
 		if ( name in this.scope.declarations ) {

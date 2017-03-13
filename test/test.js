@@ -767,6 +767,28 @@ describe( 'rollup', function () {
 			});
 		});
 
+		it( 'calls onbundled hooks in sequence', () => {
+			const result = [];
+			return rollup.rollup({
+				entry: 'entry',
+				plugins: [
+					loader({ entry: `alert('hello')` }),
+					{
+						onbundled ({ bundle }) {
+							result.push(1);
+						}
+					},
+					{
+						onbundled ( { bundle } ) {
+							result.push(2);
+						}
+					}
+				]
+			}).then( bundle => {
+				assert.deepEqual( result, [ 1, 2 ]);
+			});
+		});
+
 		it( 'calls ongenerate hooks in sequence', () => {
 			const result = [];
 

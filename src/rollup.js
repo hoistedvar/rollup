@@ -68,6 +68,15 @@ export function rollup ( options ) {
 	return bundle.build().then( () => {
 		timeEnd( '--BUILD--' );
 
+		const bundled = {
+			imports: bundle.externalModules.map( module => module.id ),
+			exports: keys( bundle.entryModule.exports ),
+			modules: bundle.orderedModules.map( module => module.toApi() )
+		};
+		return mapSequence( bundle.plugins.filter( plugin => plugin.onbundled ), plugin => {
+			return Promise.resolve( plugin.onbundled( assign({ bundle: bundled }, options )));
+		});
+	}).then(() => {
 		function generate ( options = {} ) {
 			if ( !options.format ) {
 				bundle.warn({
